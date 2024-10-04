@@ -1,0 +1,208 @@
+{% extends "polytria/base.html" %} {% block content %}
+<div class="container" style="margin-top: 100px">
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h4>Co-ordinate Inputs</h4>
+          <textarea
+            class="form-control"
+            id="coordinateInput"
+            rows="10"
+            placeholder="Coordinates (x y per line with no spaces or new line at the end):
+x1 y1
+x2 y2
+.
+."
+          ></textarea>
+          <br />
+          <div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              onclick="processCoordinates()"
+            >
+              Process Coordinates
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <h4>Graph</h4>
+          <div class="graph">
+            <div id="svgContainer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <button
+          id="submitBtn"
+          class="btn btn-success"
+          onclick="submitPolygon()"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+  let resizeTimeout;
+  let coordinates = [];
+
+  function processCoordinates() {
+    const input = document.getElementById("coordinateInput").value.trim();
+
+    coordinates = input.split("\n").map((line) => {
+      const [x, y] = line.trim().split(" ").map(Number);
+      return { x, y };
+    });
+
+    drawPolygon(coordinates);
+  }
+
+  function drawPolygon(coordinates) {
+    const svgContainer = document.getElementById("svgContainer");
+    const width = svgContainer.clientWidth;
+    const height = 400;
+
+    d3.select("#svgContainer").selectAll("*").remove();
+
+    // SVG element creation
+    const svg = d3
+      .select("#svgContainer")
+      .append("svg")
+      .attr("width", "100%")
+      .attr("height", height);
+
+    const xScale = d3
+      .scaleLinear()
+      .domain([
+        d3.min(coordinates, (d) => d.x) - 1,
+        d3.max(coordinates, (d) => d.x) + 1,
+      ])
+      .range([50, width - 50]);
+
+    const yScale = d3
+      .scaleLinear()
+      .domain([
+        d3.min(coordinates, (d) => d.y) - 1,
+        d3.max(coordinates, (d) => d.y) + 1,
+      ])
+      .range([height - 50, 50]);
+
+    function updatePolygon() {
+      svg
+        .select("polygon")
+        .attr(
+          "points",
+          coordinates.map((d) => [xScale(d.x), yScale(d.y)].join(",")).join(" ")
+        );
+    }
+
+    // Drawing the polygon 
+    svg
+      .append("polygon")
+      .attr(
+        "points",
+        coordinates.map((d) => [xScale(d.x), yScale(d.y)].join(",")).join(" ")
+      )
+      .attr("fill", "none") 
+      .attr("stroke", "black") 
+      .attr("stroke-width", 2); 
+
+    const drag = d3.drag().on("drag", function (event, d) {
+      const [mouseX, mouseY] = d3.pointer(event, svg.node());
+
+      const newX = xScale.invert(mouseX);
+      const newY = yScale.invert(mouseY);
+
+      d.x = newX;
+      d.y = newY;
+
+      d3.select(this).attr("cx", xScale(d.x)).attr("cy", yScale(d.y));
+
+      updatePolygon();
+    });
+
+    // Plotting vertices
+    svg
+      .selectAll("circle")
+      .data(coordinates)
+      .enter()
+      .append("circle")
+      .attr("cx", (d) => xScale(d.x))
+      .attr("cy", (d) => yScale(d.y))
+      .attr("r", 4) 
+      .attr("fill", "red")
+      .on("mouseover", function () {
+        
+        d3.select(this)
+          .attr("r", 6)
+          .attr("fill", "blue")
+          .style("cursor", "pointer"); 
+      })
+      .on("mouseout", function () {
+        d3.select(this)
+          .attr("r", 4)
+          .attr("fill", "red"); 
+      })
+      .call(drag); 
+
+    // axes of the plot
+    const xAxis = d3.axisBottom(xScale).ticks(Math.min(10, width / 80)); 
+    const yAxis = d3.axisLeft(yScale).ticks(Math.min(10, height / 40));
+
+    svg
+      .append("g")
+      .attr("transform", `translate(0,${height - 50})`)
+      .call(xAxis);
+
+    svg.append("g").attr("transform", `translate(50,0)`).call(yAxis);
+  }
+
+  // Resizing of plot on window maneuvring
+  function debounce(func, delay) {
+    return function () {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(func, delay);
+    };
+  }
+
+  function submitPolygon() {
+    console.log("Final Coordinates: ");
+    coordinates.forEach((coord) => {
+      const roundedX = coord.x.toFixed(1);
+      const roundedY = coord.y.toFixed(1);
+      console.log(`${roundedX} ${roundedY}`);
+    });
+  }
+
+  document.getElementById("submitBtn").addEventListener("click", function () {
+    const xData = coordinates.map((coord) => coord.x.toFixed(1));
+    const yData = coordinates.map((coord) => coord.y.toFixed(1));
+    const trace = {
+      x: xData,
+      y: yData,
+    };
+
+    fetch("{% url 'polytria-regularise_and_triangulate' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify(coordinates),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.redirect) {
+          window.location.href =
+            "{% url 'polytria-regularise_and_triangulate' %}";
+        }
+      });
+  });
+</script>
+{% endblock %}

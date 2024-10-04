@@ -1,0 +1,236 @@
+{% extends "polytria/base.html" %} {% block content %}
+<div class="container" style="margin-top: 100px">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h4>Regularized Polygon</h4>
+          <div id="regularizedPlot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h4>Triangulated Polygon</h4>
+          <div id="triangulatedPlot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<script>
+  // event listner initiated on complete parsing of the html page by the browser
+  document.addEventListener("DOMContentLoaded", function () {
+    const edges = JSON.parse("{{ edges|escapejs }}");
+    const vertices = JSON.parse("{{ vertices|escapejs }}");
+    const diagonals = JSON.parse("{{ diagonals|escapejs }}");
+    const tri_coordinates = JSON.parse("{{ tri_coordinates|escapejs }}");
+    const converted_diagonals = JSON.parse(
+      "{{ converted_diagonals|escapejs }}"
+    );
+
+    // debugging
+    console.log(edges);
+    console.log(vertices);
+    console.log(diagonals);
+    console.log(tri_coordinates);
+    console.log(converted_diagonals);
+
+    let splitVertices = [];
+    let mergeVertices = [];
+
+    vertices.forEach((vertex) => {
+      if (vertex.type === "SPLIT") {
+        splitVertices.push(vertex);
+      } else if (vertex.type === "MERGE") {
+        mergeVertices.push(vertex);
+      }
+    });
+
+    const width = 400,
+    height = 400;
+
+    // left plot
+    const regularizedPlot = d3
+      .select("#regularizedPlot")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    const xScale = d3
+      .scaleLinear()
+      .domain([
+        d3.min(vertices, (d) => d.X) - 1,
+        d3.max(vertices, (d) => d.X) + 1,
+      ])
+      .range([50, width - 50]);
+
+    const yScale = d3
+      .scaleLinear()
+      .domain([
+        d3.min(vertices, (d) => d.Y) - 1,
+        d3.max(vertices, (d) => d.Y) + 1,
+      ])
+      .range([height - 50, 50]);
+
+    edges.forEach((edge) => {
+      regularizedPlot
+        .append("line")
+        .attr("x1", xScale(edge.start.X))
+        .attr("y1", yScale(edge.start.Y))
+        .attr("x2", xScale(edge.end.X))
+        .attr("y2", yScale(edge.end.Y))
+        .attr("stroke", "blue")
+        .attr("stroke-width", 2);
+    });
+
+    diagonals.forEach((diagonal) => {
+      regularizedPlot
+        .append("line")
+        .attr("x1", xScale(diagonal.source.X))
+        .attr("y1", yScale(diagonal.source.Y))
+        .attr("x2", xScale(diagonal.end.X))
+        .attr("y2", yScale(diagonal.end.Y))
+        .attr("stroke", "red")
+        .attr("stroke-dasharray", "5,5")
+        .attr("stroke-width", 2);
+    });
+
+    vertices.forEach((vertex) => {
+      if (vertex.type === "REGULAR") {
+        regularizedPlot
+          .append("circle")
+          .attr("cx", xScale(vertex.X))
+          .attr("cy", yScale(vertex.Y))
+          .attr("r", 4)
+          .attr("fill", "red");
+      } else if (vertex.type === "START") {
+        regularizedPlot
+          .append("rect")
+          .attr("x", xScale(vertex.X) - 4)
+          .attr("y", yScale(vertex.Y) - 4)
+          .attr("width", 8)
+          .attr("height", 8)
+          .attr("stroke", "blue")
+          .attr("fill", "none");
+      } else if (vertex.type === "END") {
+        regularizedPlot
+          .append("rect")
+          .attr("x", xScale(vertex.X) - 4)
+          .attr("y", yScale(vertex.Y) - 4)
+          .attr("width", 8)
+          .attr("height", 8)
+          .attr("fill", "blue");
+      }
+
+      regularizedPlot
+        .append("text")
+        .attr("x", xScale(vertex.X))
+        .attr("y", yScale(vertex.Y))
+        .attr("dy", -10)
+        .attr("text-anchor", "middle")
+        .text(`(${vertex.X}, ${vertex.Y})`);
+    });
+
+    splitVertices.forEach((splitVertex) => {
+      regularizedPlot
+        .append("path")
+        .attr("d", d3.symbol().type(d3.symbolTriangle).size(50))
+        .attr(
+          "transform",
+          `translate(${xScale(splitVertex.X)}, ${yScale(
+            splitVertex.Y
+          )}) rotate(180)`
+        )
+        .attr("fill", "red");
+    });
+
+    mergeVertices.forEach((mergeVertex) => {
+      regularizedPlot
+        .append("path")
+        .attr("d", d3.symbol().type(d3.symbolTriangle).size(50))
+        .attr(
+          "transform",
+          `translate(${xScale(mergeVertex.X)}, ${yScale(mergeVertex.Y)})`
+        )
+        .attr("fill", "red");
+    });
+
+    // right plot
+    const triangulatedPlot = d3
+      .select("#triangulatedPlot")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    edges.forEach((edge) => {
+      triangulatedPlot
+        .append("line")
+        .attr("x1", xScale(edge.start.X))
+        .attr("y1", yScale(edge.start.Y))
+        .attr("x2", xScale(edge.end.X))
+        .attr("y2", yScale(edge.end.Y))
+        .attr("stroke", "blue")
+        .attr("stroke-width", 2);
+    });
+
+    diagonals.forEach((diagonal) => {
+      triangulatedPlot
+        .append("line")
+        .attr("x1", xScale(diagonal.source.X))
+        .attr("y1", yScale(diagonal.source.Y))
+        .attr("x2", xScale(diagonal.end.X))
+        .attr("y2", yScale(diagonal.end.Y))
+        .attr("stroke", "red")
+        .attr("stroke-dasharray", "5,5")
+        .attr("stroke-width", 2);
+    });
+
+    converted_diagonals.forEach((diagonal) => {
+      triangulatedPlot
+        .append("line")
+        .attr("x1", xScale(diagonal.source.X))
+        .attr("y1", yScale(diagonal.source.Y))
+        .attr("x2", xScale(diagonal.end.X))
+        .attr("y2", yScale(diagonal.end.Y))
+        .attr("stroke", "green")
+        .attr("stroke-dasharray", "5,5")
+        .attr("stroke-width", 2);
+    });
+
+    vertices.forEach((vertex) => {
+      triangulatedPlot
+        .append("circle")
+        .attr("cx", xScale(vertex.X))
+        .attr("cy", yScale(vertex.Y))
+        .attr("r", 4)
+        .attr("fill", "red");
+    });
+
+    regularizedPlot
+      .append("g")
+      .attr("transform", `translate(0,${height - 50})`)
+      .call(d3.axisBottom(xScale));
+
+    regularizedPlot
+      .append("g")
+      .attr("transform", `translate(50,0)`)
+      .call(d3.axisLeft(yScale));
+
+    triangulatedPlot
+      .append("g")
+      .attr("transform", `translate(0,${height - 50})`)
+      .call(d3.axisBottom(xScale));
+
+    triangulatedPlot
+      .append("g")
+      .attr("transform", `translate(50,0)`)
+      .call(d3.axisLeft(yScale));
+  });
+</script>
+{% endblock %}

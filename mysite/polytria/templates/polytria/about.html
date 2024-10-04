@@ -1,0 +1,42 @@
+{% extends "polytria/base.html" %} {% block content %}
+<div class="container" style="margin-top: 100px">
+  <h1>About Simple Polygon Triangulation</h1>
+  <p>
+    This web application performs triangulation of simple polygons.
+    Triangulation refers to the process of dividing a polygon into
+    non-overlapping triangles, where each triangle is formed by connecting
+    vertices of the polygon with straight lines.
+  </p>
+  <div class="card">
+    <div class="card-body">
+      <h2>Guidelines for Input</h2>
+      <p>
+        Simple polygon is a polygon that does not intersect itself and has a
+        single, unbroken boundary. Please ensure that the vertices are provided
+        in a sequence that defines the perimeter of the polygon either clockwise
+        or counterclockwise.
+      </p>
+      <ul>
+        <li>
+          <strong>Valid Input:</strong> A sequence of coordinates that form a
+          closed loop without intersections, such as (x1, y1), (x2, y2), ...,
+          (xn, yn).
+        </li>
+        <li>
+          <strong>Invalid Input:</strong> Coordinates that cause the polygon's
+          sides to cross over one another or do not form a closed shape.
+        </li>
+      </ul>
+      <p>
+        Once the coordinates are submitted, the application will generate the
+        triangulated mesh and display the resulting triangles. This process aids
+        in understanding the structure and properties of the polygon and is
+        utilized for efficient rendering and analysis in computational tasks.
+      </p>
+      Users can provide input in the form of coordinates that define the
+      vertices of a simple polygon.
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
