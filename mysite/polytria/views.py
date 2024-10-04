@@ -16,7 +16,7 @@ def regularise_and_triangulate(request):
     if request.method == 'POST':
         coordinates = json.loads(request.body)
         
-        tri_coordinates = [(coord['x'], coord['y']) for coord in coordinates]  # List of tuples
+        tri_coordinates = [(coord['x'], coord['y']) for coord in coordinates]
          
         # coonversion for easier handling
         tri_trimmed_coordinates = [{'X': round(coord[0], 1), 'Y': round(coord[1], 1)} for coord in tri_coordinates]
