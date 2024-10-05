@@ -18,11 +18,11 @@ Before you begin, ensure that the following software is installed on your system
 Open Command Prompt (or your preferred terminal) and run:
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/harisUOL/MScProject.git
 
 Navigate to the cloned project directory:
 
-cd your-repo-name
+cd MScProject
 
 2. Set Up a Virtual Environment
 
@@ -32,7 +32,7 @@ python -m venv venv
 
 Activate the virtual environment:
 
-venv\Scripts\activate
+venv\Scripts\activate.bat
 
 3. Install Dependencies
 
@@ -63,7 +63,7 @@ Now, copy the polytria app from the cloned project to your newly created mysite 
 
 In your new Django project (mysite), open the settings.py file (located in ./mysite/mysite/settings.py) and make the following changes:
 
-1. Add 'polytria' to the INSTALLED_APPS list:
+Add 'polytria' to the INSTALLED_APPS list:
 
 
 
@@ -71,9 +71,6 @@ INSTALLED_APPS = [
     # Other apps
     'polytria',
 ]
-
-2. Adjust any other necessary configurations, such as DATABASES, TEMPLATES, or STATICFILES as per your requirements.
-
 
 
 7. Make Migrations and Update apps.py
