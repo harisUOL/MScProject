@@ -1,6 +1,7 @@
 # Simple Polygon Triangulation
 <br>
-## Project Installation Guide for Windows
+
+### Project Installation Guide for Windows
 
 ### Prerequisites
 
@@ -17,7 +18,7 @@ Before you begin, ensure that the following software is installed on your system
 Open Command Prompt (or your preferred terminal) and run:
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/harisUOL/MScProject.git
 ```
 Navigate to the cloned project directory:
 
@@ -25,6 +26,7 @@ Navigate to the cloned project directory:
 ```bash
 cd your-repo-name
 ```
+
 2. Set Up a Virtual Environment
 
 Create a virtual environment to isolate dependencies:
@@ -47,6 +49,7 @@ pip install -r requirements.txt
 ```
 
 4. Create a New Django Project
+
 Since the project was initially developed on Linux, you need to create a new Django project on Windows.
 
 Run the following command to create a new Django project named mysite in the same directory as the cloned project:
@@ -68,6 +71,7 @@ In your new Django project (mysite), open the settings.py file (located in ./mys
 
 Add 'polytria' to the INSTALLED_APPS list:
 ```python
+
 INSTALLED_APPS = [
     # Other apps
     'polytria',
@@ -105,3 +109,4 @@ Migration Issues: If you run into migration issues, try running:
 python manage.py makemigrations
 python manage.py migrate
 ```
+
