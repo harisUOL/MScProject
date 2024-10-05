@@ -1,9 +1,9 @@
-Simple Polygon Triangulation
+# Simple Polygon Triangulation
 <br>
 
-# Project Installation Guide for Windows
+### Project Installation Guide for Windows
 
-## Prerequisites
+#### Prerequisites
 
 Before you begin, ensure that the following software is installed on your system:
 
