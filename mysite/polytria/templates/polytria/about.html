@@ -1,42 +1,92 @@
 {% extends "polytria/base.html" %} {% block content %}
-<div class="container" style="margin-top: 100px">
-  <h1>About Simple Polygon Triangulation</h1>
-  <p>
-    This web application performs triangulation of simple polygons.
-    Triangulation refers to the process of dividing a polygon into
-    non-overlapping triangles, where each triangle is formed by connecting
-    vertices of the polygon with straight lines.
-  </p>
-  <div class="card">
-    <div class="card-body">
-      <h2>Guidelines for Input</h2>
-      <p>
-        Simple polygon is a polygon that does not intersect itself and has a
-        single, unbroken boundary. Please ensure that the vertices are provided
-        in a sequence that defines the perimeter of the polygon either clockwise
-        or counterclockwise.
-      </p>
-      <ul>
-        <li>
-          <strong>Valid Input:</strong> A sequence of coordinates that form a
-          closed loop without intersections, such as (x1, y1), (x2, y2), ...,
-          (xn, yn).
-        </li>
-        <li>
-          <strong>Invalid Input:</strong> Coordinates that cause the polygon's
-          sides to cross over one another or do not form a closed shape.
-        </li>
-      </ul>
-      <p>
-        Once the coordinates are submitted, the application will generate the
-        triangulated mesh and display the resulting triangles. This process aids
-        in understanding the structure and properties of the polygon and is
-        utilized for efficient rendering and analysis in computational tasks.
-      </p>
-      Users can provide input in the form of coordinates that define the
-      vertices of a simple polygon.
+  <div class="container mt-5 mb-5">
+
+    <!-- HERO SECTION -->
+    <div class="about-hero shadow-soft mb-5">
+        <div class="d-flex align-items-center">
+            <div>
+                <h1 class="font-weight-bold mb-1">Polygon Triangulation Tool</h1>
+                <p class="text-muted mb-0">Visualize, edit, and triangulate simple polygons interactively.</p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ABOUT THE TOOL -->
+    <div class="card mb-4 shadow-sm coord-card">
+      <div class="card-body">
+        <h3 class="mb-3">💡 What This App Does</h3>
+        <p class="text-muted">
+            This application performs <strong>simple polygon triangulation</strong>, transforming any valid
+            polygon into a set of triangles by connecting non-adjacent vertices.
+        </p>
+        <p class="text-muted">
+            You can paste your coordinates, preview the polygon, adjust points interactively,
+            and finally generate a triangulation diagram — all inside your browser.
+        </p>
     </div>
   </div>
+
+
+    <!-- INPUT GUIDELINES -->
+    <div class="card mb-4 shadow-sm coord-card">
+      <div class="card-body">
+
+        <h3 class="mb-4">📌 Input Guidelines</h3>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="shadow-soft p-3 rounded">
+                    <h5 class="text-success">✔ Valid Input</h5>
+                    <p class="text-muted small">
+                        A list of coordinates forming a <strong>closed loop</strong> with no self-intersections.
+                        <br><br>
+                        Example:<br>
+                        (x1 y1), (x2 y2), ..., (xn yn)
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="shadow-soft p-3 rounded">
+                    <h5 class="text-danger">✘ Invalid Input</h5>
+                    <p class="text-muted small">
+                        Polygons where edges cross, or where the order of coordinates does not form a closed boundary.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <!-- HOW IT WORKS SECTION -->
+    <div class="card mb-4 shadow-sm coord-card">
+      <div class="card-body">
+        <h3 class="mb-4">⚙ How It Works</h3>
+
+        <div class="timeline-step"><strong>1.</strong> Paste or enter the polygon coordinates.</div>
+        <div class="timeline-step"><strong>2.</strong> Visualize and drag vertices to adjust the shape.</div>
+        <div class="timeline-step"><strong>3.</strong> Submit the polygon for triangulation.</div>
+        <div class="timeline-step"><strong>4.</strong> The system automatically generates the triangulated mesh.</div>
+        <div class="timeline-step"><strong>5.</strong> View, compare, and analyze the output triangles.</div>
+    </div>
+    </div>
+
 </div>
+
+
+
+
+<!-- FAQ INTERACTIVITY -->
+<script>
+    document.querySelectorAll(".faq-question").forEach(q => {
+        q.addEventListener("click", () => {
+            let ans = q.nextElementSibling;
+            ans.style.display = ans.style.display === "block" ? "none" : "block";
+        });
+    });
+</script>
 
 {% endblock content %}

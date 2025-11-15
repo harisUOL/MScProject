@@ -47,6 +47,176 @@ x2 y2
   </div>
 </div>
 
+<hr class="my-5" />
+
+<h4 class="text-center mb-4">Predefined Coordinate Sets</h4>
+
+<div class="row">
+
+  <!-- Example Card 1 -->
+  <div class="col-md-4">
+    <div class="card mb-4 shadow-sm coord-card">
+      <div class="card-body">
+        <pre class="coord-text">
+-6.8 4.1
+-9.1 1.6
+-8.7 -3.9
+-4.4 -2.2
+-6.4 -6.5
+-3.4 -11.7
+-0.7 0.1
+1.9 -7.7
+4.4 -3.8
+6.7 -11.7
+8.0 -0.8
+12.9 2.9
+12.5 8.1
+8.3 10.9
+3.2 9.0
+-1.1 12.6
+-2.0 6.7
+-9.3 9.3
+        </pre>
+        <button class="btn btn-outline-primary btn-sm copy-btn" onclick="copyCoords(this)">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example Card 2 -->
+  <div class="col-md-4">
+    <div class="card mb-4 shadow-sm coord-card">
+      <div class="card-body">
+        <pre class="coord-text">
+8 15
+6 13
+4 10
+2 7
+0 4
+-2 1
+-4 -2
+-6 -5
+-7 -9
+-6 -12
+-4 -14
+-1 -15
+2 -14
+5 -12
+7 -9
+9 -6
+10 -3
+9 1
+7 4
+8 15
+        </pre>
+        <button class="btn btn-outline-primary btn-sm copy-btn" onclick="copyCoords(this)">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example Card 3 -->
+  <div class="col-md-4">
+    <div class="card mb-4 shadow-sm coord-card">
+      <div class="card-body">
+        <pre class="coord-text">
+10.0 12.0
+7.0 14.0
+-0.2 16.8
+-2.4 14.7
+-5.1 13.1
+-6.0 10.0
+-8.0 7.0
+-10.0 3.0
+-7.4 -0.0
+-10.0 -5.0
+-2.0 -9.0
+-6.0 -12.0
+-3.0 -14.0
+1.0 -15.0
+5.0 -13.0
+8.0 -10.0
+10.0 -6.0
+6.7 -0.0
+10.0 12.0
+        </pre>
+        <button class="btn btn-outline-primary btn-sm copy-btn" onclick="copyCoords(this)">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example Card 4 -->
+  <div class="col-md-4">
+    <div class="card mb-4 shadow-sm coord-card">
+      <div class="card-body">
+        <pre class="coord-text">
+12 5
+10 8
+7 10
+3 11
+-1 10
+-4 8
+-7 5
+-9 2
+-10 -2
+-9 -6
+-7 -9
+-4 -11
+0 -12
+4 -11
+7 -9
+9 -5
+10 -1
+9 3
+7 6
+12 5
+        </pre>
+        <button class="btn btn-outline-primary btn-sm copy-btn" onclick="copyCoords(this)">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example Card 5 -->
+  <div class="col-md-4">
+    <div class="card mb-4 shadow-sm coord-card">
+      <div class="card-body">
+        <pre class="coord-text">
+7 6
+3 9
+-1 11
+-6 9
+-10 7
+-13 3
+-11 -1
+-7 -4
+-2 -6
+2 -8
+7 6
+        </pre>
+        <button class="btn btn-outline-primary btn-sm copy-btn" onclick="copyCoords(this)">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example Card 6 -->
+  <div class="col-md-4">
+    <div class="card mb-4 shadow-sm coord-card">
+      <div class="card-body">
+        <pre class="coord-text">
+2 3
+-4 5
+-8 2
+-3 -4
+-1 -7
+2 -4
+1 -1
+        </pre>
+        <button class="btn btn-outline-primary btn-sm copy-btn" onclick="copyCoords(this)">Copy</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
   let resizeTimeout;
@@ -179,6 +349,22 @@ x2 y2
       console.log(`${roundedX} ${roundedY}`);
     });
   }
+
+  function copyCoords(button) {
+    const text = button.parentElement.querySelector(".coord-text").innerText.trim();
+
+    navigator.clipboard.writeText(text).then(() => {
+        button.innerText = "Copied!";
+        button.classList.remove("btn-outline-primary");
+        button.classList.add("btn-success");
+
+        setTimeout(() => {
+            button.innerText = "Copy";
+            button.classList.remove("btn-success");
+            button.classList.add("btn-outline-primary");
+        }, 1200);
+    });
+}
 
   document.getElementById("submitBtn").addEventListener("click", function () {
     const xData = coordinates.map((coord) => coord.x.toFixed(1));
