@@ -10,7 +10,7 @@ Before you begin, ensure that the following software is installed on your system
 - **Python** (Version 3.8 or higher): [Download Python](https://www.python.org/downloads/)
 - **pip** (Python package manager): Comes with Python installation
 - **Git** (For cloning the repository): [Download Git](https://git-scm.com/downloads)
-
+ 
 ## Step-by-Step Installation
 
 1. Clone the Repository
